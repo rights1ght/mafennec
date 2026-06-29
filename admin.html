@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mafennec — Админка</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -292,7 +293,7 @@
       <a href="index.html" class="btn btn-outline" target="_blank">&#9654; Сайт</a>
       <button class="btn btn-outline" id="pwChangeBtn">Пароль</button>
       <button class="btn btn-outline" id="exportBtn">&#8681; Скачать config.json</button>
-      <button class="btn btn-green" id="saveAllBtn">&#10003; Сохранить</button>
+      <button class="btn btn-green" id="saveAllBtn">&#8681; Скачать сайт</button>
     </div>
   </div>
 
@@ -583,25 +584,42 @@
 
     document.getElementById('saveAllBtn').addEventListener('click', function() {
       saveTexts();
-      var exportData = {
-        photos: state.photos.map(function(p) {
-          return { name: p.name, featured: p.featured, custom: p.custom || false, dataUrl: p.dataUrl || null };
-        }),
-        texts: state.texts
+      showToast('Генерация сайта...');
+      var texts = state.texts;
+      var photos = state.photos;
+      var configData = {
+        photos: photos.map(function(p) { return { name: p.name, featured: p.featured, custom: p.custom || false, dataUrl: p.dataUrl || null }; }),
+        texts: texts
       };
-      fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(exportData)
-      })
-      .then(function(r) { return r.json(); })
-      .then(function() {
-        saveState(state);
-        showToast('Сохранено на сервере!');
-      })
-      .catch(function() {
-        saveState(state);
-        showToast('Сервер недоступен, сохранено локально', true);
+      fetch('index.html').then(function(r) { return r.text(); }).then(function(template) {
+        var configJSON = JSON.stringify(configData);
+        var patched = template.replace(
+          /fetch\('\/api\/config'\)[\s\S]*?\.then\(function\(config\) \{ applyConfig\(config\); \}\);/,
+          'var config = ' + configJSON + ';\n      applyConfig(config);'
+        );
+        var zip = new JSZip();
+        zip.file('index.html', patched);
+        zip.file('admin.html', '<!DOCTYPE html>\n' + document.documentElement.outerHTML);
+        zip.file('config.json', JSON.stringify(configData, null, 2));
+        var filePromises = photos.filter(function(p) { return !p.dataUrl && p.name; }).map(function(p) {
+          return fetch('./' + p.name).then(function(r) { return r.ok ? r.blob() : null; }).then(function(blob) {
+            if (blob) zip.file(p.name, blob);
+          }).catch(function() {});
+        });
+        Promise.all(filePromises).then(function() {
+          zip.generateAsync({ type: 'blob' }).then(function(content) {
+            var url = URL.createObjectURL(content);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'mafennec-site.zip';
+            a.click();
+            URL.revokeObjectURL(url);
+            saveState(state);
+            showToast('Сайт скачан!');
+          });
+        });
+      }).catch(function() {
+        showToast('Ошибка генерации', true);
       });
     });
 

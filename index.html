@@ -441,7 +441,9 @@
 
     fetch('/api/config')
       .then(function(r) { return r.ok ? r.json() : null; })
-      .catch(function() { return null; })
+      .catch(function() {
+        return fetch('config.json').then(function(r) { return r.ok ? r.json() : null; }).catch(function() { return null; });
+      })
       .then(function(config) { applyConfig(config); });
   </script>
 </body>
