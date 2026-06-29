@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mafennec — Админка</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --bg-card: #18181b;
+      --bg-hover: #1f1f23;
+      --fg: #fafafa;
+      --fg-muted: #a1a1aa;
+      --border: #27272a;
+      --border-hover: #3f3f46;
+      --accent: #22c55e;
+      --accent-hover: #16a34a;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --star: #eab308;
+      --font: 'Inter', sans-serif;
+      --radius: 10px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--fg); line-height: 1.5; min-height: 100vh; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    input, textarea { font-family: inherit; font-size: inherit; }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(10,10,11,0.9); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar h1 { font-size: 1.125rem; font-weight: 600; }
+    .topbar-actions { display: flex; gap: 0.75rem; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1rem; border-radius: var(--radius);
+      font-size: 0.875rem; font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-green { background: var(--accent); color: #000; }
+    .btn-green:hover { background: var(--accent-hover); }
+    .btn-outline { border: 1px solid var(--border); color: var(--fg-muted); }
+    .btn-outline:hover { border-color: var(--border-hover); color: var(--fg); background: var(--bg-hover); }
+    .btn-red { background: var(--danger); color: #fff; }
+    .btn-red:hover { background: var(--danger-hover); }
+
+    .tabs {
+      display: flex; gap: 0; border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+    .tab {
+      padding: 1rem 1.5rem; font-size: 0.9375rem; font-weight: 500;
+      color: var(--fg-muted); border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--fg); }
+    .tab.active { color: var(--fg); border-bottom-color: var(--fg); }
+
+    .panel { display: none; padding: 2rem; }
+    .panel.active { display: block; }
+
+    .section-title {
+      font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem; border-bottom: 1px solid var(--border);
+    }
+
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label {
+      display: block; font-size: 0.8125rem; font-weight: 500;
+      color: var(--fg-muted); margin-bottom: 0.5rem; text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-input, .form-textarea {
+      width: 100%; padding: 0.75rem 1rem;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--fg); font-size: 0.9375rem;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus {
+      outline: none; border-color: var(--accent);
+    }
+    .form-textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .photo-card {
+      position: relative; border-radius: var(--radius);
+      overflow: hidden; border: 2px solid var(--border);
+      transition: border-color 0.2s; background: var(--bg-card);
+    }
+    .photo-card:hover { border-color: var(--border-hover); }
+    .photo-card.featured { border-color: var(--star); }
+    .photo-card img {
+      width: 100%; aspect-ratio: 1; object-fit: cover; display: block;
+    }
+    .photo-card-actions {
+      display: flex; gap: 0; border-top: 1px solid var(--border);
+    }
+    .photo-card-actions button {
+      flex: 1; padding: 0.5rem; font-size: 0.75rem; font-weight: 500;
+      transition: background 0.2s; display: flex; align-items: center;
+      justify-content: center; gap: 0.375rem;
+    }
+    .photo-card-actions button:hover { background: var(--bg-hover); }
+    .photo-card-actions .star-btn { color: var(--fg-muted); }
+    .photo-card-actions .star-btn.active { color: var(--star); }
+    .photo-card-actions .delete-btn { color: var(--danger); }
+    .photo-card-actions .delete-btn:hover { background: rgba(239,68,68,0.1); }
+
+    .upload-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 3rem 2rem; text-align: center; cursor: pointer;
+      transition: all 0.2s; margin-bottom: 2rem;
+    }
+    .upload-zone:hover { border-color: var(--accent); background: rgba(34,197,94,0.05); }
+    .upload-zone.dragover { border-color: var(--accent); background: rgba(34,197,94,0.1); }
+    .upload-zone p { color: var(--fg-muted); font-size: 0.9375rem; }
+    .upload-zone .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .upload-zone input { display: none; }
+
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      padding: 1rem 1.5rem; border-radius: var(--radius);
+      background: var(--accent); color: #000; font-weight: 500;
+      font-size: 0.875rem; z-index: 1000;
+      transform: translateY(120%); opacity: 0;
+      transition: all 0.3s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { background: var(--danger); color: #fff; }
+
+    .empty { text-align: center; padding: 4rem 2rem; color: var(--fg-muted); }
+
+    .page-preview { max-width: 700px; margin: 0 auto; }
+    .preview-section { margin-bottom: 2rem; }
+    .preview-label {
+      font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--fg-subtle); margin-bottom: 0.5rem;
+      padding-left: 0.25rem;
+    }
+    .preview-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem; transition: border-color 0.2s;
+    }
+    .preview-card:focus-within { border-color: var(--accent); }
+    .editable {
+      outline: none; border-radius: 4px; padding: 2px 4px;
+      margin: 2px -4px; transition: background 0.15s;
+    }
+    .editable:hover { background: rgba(255,255,255,0.04); }
+    .editable:focus { background: rgba(34,197,94,0.08); }
+    .editable-title { font-size: 2rem; font-weight: 700; line-height: 1.1; }
+    .editable-subtitle { font-size: 1.125rem; color: var(--fg-muted); line-height: 1.6; }
+    .editable-heading { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .editable-muted { font-size: 1rem; color: var(--fg-muted); }
+    .editable-paragraph { font-size: 1rem; color: var(--fg-muted); line-height: 1.7; }
+    .editable-btn {
+      display: inline-block; padding: 0.75rem 1.5rem; background: #fff; color: #000;
+      border-radius: 10px; font-weight: 500; font-size: 0.9375rem;
+    }
+    .preview-btn-wrap { margin-top: 1rem; text-align: center; }
+    .preview-hero { text-align: center; }
+    .preview-links { padding: 1.25rem 1.5rem; }
+    .link-row {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.625rem 0; border-bottom: 1px solid var(--border);
+    }
+    .link-row:last-child { border-bottom: none; }
+    .link-icon { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; color: var(--fg-muted); flex-shrink: 0; }
+    .link-input {
+      flex: 1; background: none; border: none; color: var(--fg);
+      font-size: 0.9375rem; outline: none; padding: 4px 0;
+    }
+    .link-input:focus { color: var(--accent); }
+    .link-input::placeholder { color: var(--fg-subtle); }
+
+    .login-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+    }
+    .login-overlay.hidden { display: none; }
+    .login-box {
+      width: 100%; max-width: 360px; padding: 2.5rem;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; text-align: center;
+    }
+    .login-logo { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .login-sub { font-size: 0.875rem; color: var(--fg-muted); margin-bottom: 2rem; }
+    .login-field { margin-bottom: 1rem; text-align: left; }
+    .login-field label { display: block; font-size: 0.75rem; font-weight: 500; color: var(--fg-muted); margin-bottom: 0.375rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .login-field input {
+      width: 100%; padding: 0.75rem 1rem; background: var(--bg);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--fg); font-size: 0.9375rem; outline: none; transition: border-color 0.2s;
+    }
+    .login-field input:focus { border-color: var(--accent); }
+    .login-error { font-size: 0.8125rem; color: var(--danger); margin-bottom: 1rem; min-height: 1.25rem; }
+    .login-btn {
+      width: 100%; padding: 0.75rem; background: var(--accent); color: #000;
+      border-radius: var(--radius); font-weight: 600; font-size: 0.9375rem;
+      transition: background 0.2s;
+    }
+    .login-btn:hover { background: var(--accent-hover); }
+
+    .pw-modal {
+      position: fixed; inset: 0; z-index: 300;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    }
+    .pw-modal.hidden { display: none; }
+    .pw-box {
+      width: 100%; max-width: 380px; padding: 2rem;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+    .pw-box h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; }
+    .pw-field { margin-bottom: 1rem; }
+    .pw-field label { display: block; font-size: 0.75rem; font-weight: 500; color: var(--fg-muted); margin-bottom: 0.375rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .pw-field input {
+      width: 100%; padding: 0.75rem 1rem; background: var(--bg);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--fg); font-size: 0.9375rem; outline: none; transition: border-color 0.2s;
+    }
+    .pw-field input:focus { border-color: var(--accent); }
+    .pw-error { font-size: 0.8125rem; color: var(--danger); margin-bottom: 0.75rem; min-height: 1.25rem; }
+    .pw-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+    .pw-actions button { flex: 1; }
+
+    @media (max-width: 640px) {
+      .topbar { padding: 0.75rem 1rem; }
+      .panel { padding: 1rem; }
+      .photo-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+      <div class="login-logo">Mafennec</div>
+      <div class="login-sub">Админ-панель</div>
+      <div class="login-field">
+        <label>Логин</label>
+        <input type="text" id="loginUser" autocomplete="username">
+      </div>
+      <div class="login-field">
+        <label>Пароль</label>
+        <input type="password" id="loginPass" autocomplete="current-password">
+      </div>
+      <div class="login-error" id="loginError"></div>
+      <button class="login-btn" id="loginBtn">Войти</button>
+    </div>
+  </div>
+
+  <div class="pw-modal hidden" id="pwModal">
+    <div class="pw-box">
+      <h3>Смена пароля</h3>
+      <div class="pw-field">
+        <label>Текущий пароль</label>
+        <input type="password" id="pwOld">
+      </div>
+      <div class="pw-field">
+        <label>Новый пароль</label>
+        <input type="password" id="pwNew">
+      </div>
+      <div class="pw-field">
+        <label>Повторите новый пароль</label>
+        <input type="password" id="pwNew2">
+      </div>
+      <div class="pw-error" id="pwError"></div>
+      <div class="pw-actions">
+        <button class="btn btn-outline" id="pwCancel">Отмена</button>
+        <button class="btn btn-green" id="pwSave">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <h1>Mafennec — Админка</h1>
+    <div class="topbar-actions">
+      <a href="index.html" class="btn btn-outline" target="_blank">&#9654; Сайт</a>
+      <button class="btn btn-outline" id="pwChangeBtn">Пароль</button>
+      <button class="btn btn-outline" id="exportBtn">&#8681; Скачать config.json</button>
+      <button class="btn btn-green" id="saveAllBtn">&#10003; Сохранить</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="photos">Фотографии</button>
+    <button class="tab" data-tab="texts">Тексты</button>
+  </div>
+
+  <div class="panel active" id="panel-photos">
+    <div class="upload-zone" id="uploadZone">
+      <div class="icon">&#128247;</div>
+      <p>Перетащи фото сюда или нажми для выбора</p>
+      <input type="file" id="fileInput" accept="image/*" multiple>
+    </div>
+    <h2 class="section-title">Все фотографии (<span id="photoCount">0</span>)</h2>
+    <div class="photo-grid" id="photoGrid"></div>
+  </div>
+
+  <div class="panel" id="panel-texts">
+    <div class="page-preview">
+
+      <div class="preview-section">
+        <div class="preview-label">Hero</div>
+        <div class="preview-card">
+          <div class="preview-hero">
+            <div class="editable" data-key="heroGreeting" contenteditable="true">Привет, я</div>
+            <div class="editable editable-title" data-key="heroTitle" contenteditable="true">Mafennec</div>
+            <div class="editable editable-subtitle" data-key="heroSubtitle" contenteditable="true">Графический художник. Создаю визуальные истории через фотографию и графику.</div>
+            <div class="preview-btn-wrap"><span class="editable editable-btn" data-key="heroBtn" contenteditable="true">Смотреть работы</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <div class="preview-label">Избранные работы</div>
+        <div class="preview-card">
+          <div class="editable editable-heading" data-key="featuredTitle" contenteditable="true">Избранные работы</div>
+          <div class="editable editable-muted" data-key="featuredSubtitle" contenteditable="true">Лучшие проекты, показывающие стиль и подход</div>
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <div class="preview-label">Галерея</div>
+        <div class="preview-card">
+          <div class="editable editable-heading" data-key="galleryTitle" contenteditable="true">Полная галерея</div>
+          <div class="editable editable-muted" data-key="gallerySubtitle" contenteditable="true">Все работы в хронологическом порядке</div>
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <div class="preview-label">Обо мне</div>
+        <div class="preview-card">
+          <div class="editable editable-heading" data-key="aboutTitle" contenteditable="true">Обо мне</div>
+          <div class="editable editable-paragraph" data-key="aboutBody" contenteditable="true">Я Mafennec — графический художник с фокусом на визуальное повествование. Моя работа объединяет фотографию, графический дизайн и внимательность к деталям.</div>
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <div class="preview-label">Контакты</div>
+        <div class="preview-card">
+          <div class="editable editable-heading" data-key="contactTitle" contenteditable="true">Связаться</div>
+          <div class="editable editable-muted" data-key="contactSubtitle" contenteditable="true">Открыт для новых проектов и сотрудничества</div>
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <div class="preview-label">Ссылки</div>
+        <div class="preview-card preview-links">
+          <div class="link-row">
+            <span class="link-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.94 7.13l-1.97 9.28c-.15.67-.54.83-1.09.52l-3.02-2.22-1.46 1.4c-.16.16-.3.3-.62.3l.22-3.05 5.55-5.01c.24-.22-.05-.33-.37-.14L8.62 13.2l-2.97-.93c-.65-.2-.66-.65.14-.96l11.61-4.48c.54-.2 1.01.13.84.96l-.26.02z"/></svg></span>
+            <input class="link-input" id="link-telegram" data-key="linkTelegram" placeholder="Telegram URL">
+          </div>
+          <div class="link-row">
+            <span class="link-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1 0-5.78 2.92 2.92 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.57 6.33 6.33 0 0 0 9.37 22a6.33 6.33 0 0 0 6.37-6.22V9.4a8.16 8.16 0 0 0 4.85 1.58V7.53a4.85 4.85 0 0 1-1-.84z"/></svg></span>
+            <input class="link-input" id="link-tiktok" data-key="linkTiktok" placeholder="TikTok URL">
+          </div>
+          <div class="link-row">
+            <span class="link-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></span>
+            <input class="link-input" id="link-youtube" data-key="linkYoutube" placeholder="YouTube URL">
+          </div>
+          <div class="link-row">
+            <span class="link-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg></span>
+            <input class="link-input" id="link-twitch" data-key="linkTwitch" placeholder="Twitch URL">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    var DEFAULTS = {
+      heroGreeting: 'Привет, я',
+      heroTitle: 'Mafennec',
+      heroSubtitle: 'Графический художник. Создаю визуальные истории через фотографию и графику.',
+      heroBtn: 'Смотреть работы',
+      featuredTitle: 'Избранные работы',
+      featuredSubtitle: 'Лучшие проекты, показывающие стиль и подход',
+      galleryTitle: 'Полная галерея',
+      gallerySubtitle: 'Все работы в хронологическом порядке',
+      aboutTitle: 'Обо мне',
+      aboutBody: 'Я Mafennec — графический художник с фокусом на визуальное повествование. Моя работа объединяет фотографию, графический дизайн и внимательность к деталям.\n\nКаждый проект начинается с понимания сути: чего хочет сказать бренд, какую эмоцию нужно передать, какую историю рассказать. Только потом рождается визуальный язык.\n\nВ портфолио представлены работы разных лет — от коммерческих съемок до личных проектов. Все они объединены стремлением к честной, глубокой и эстетичной визуальной коммуникации.',
+      contactTitle: 'Связаться',
+      contactSubtitle: 'Открыт для новых проектов и сотрудничества',
+      linkTelegram: 'https://t.me/mafennec',
+      linkTiktok: 'https://www.tiktok.com/@mafennec?_r=1&_t=ZS-973l50kphtC',
+      linkYoutube: 'https://youtube.com/@mafennec?si=tMbx_iJWUw3Xxd1D',
+      linkTwitch: 'https://www.twitch.tv/mafennec'
+    };
+
+    var DEFAULT_PHOTOS = [
+      'photo_2026-06-29_16-46-22.jpg','photo_2026-06-29_16-46-47.jpg',
+      'photo_2026-06-29_16-46-54.jpg','photo_2026-06-29_16-47-11.jpg',
+      'photo_2026-06-29_16-47-34.jpg','photo_2026-06-29_16-47-37.jpg',
+      'photo_2026-06-29_16-47-40.jpg','photo_2026-06-29_16-47-43.jpg',
+      'photo_2026-06-29_16-47-52.jpg','photo_2026-06-29_16-47-55.jpg',
+      'photo_2026-06-29_16-47-58.jpg','photo_2026-06-29_16-48-01.jpg',
+      'photo_2026-06-29_16-48-12.jpg','photo_2026-06-29_16-48-18.jpg',
+      'photo_2026-06-29_16-48-25.jpg','photo_2026-06-29_16-48-44.jpg',
+      'photo_2026-06-29_16-48-47.jpg','photo_2026-06-29_16-48-51.jpg'
+    ];
+
+    var STORAGE_KEY = 'mafennec_admin';
+
+    function loadState() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch(e) {}
+      return { photos: DEFAULT_PHOTOS.map(function(n){ return { name: n, featured: false, custom: false }; }), texts: {} };
+    }
+
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    var state = loadState();
+    if (!state.photos || state.photos.length === 0) {
+      state.photos = DEFAULT_PHOTOS.map(function(n){ return { name: n, featured: false, custom: false }; });
+    }
+    if (!state.texts) state.texts = {};
+
+    function getText(key) {
+      return state.texts[key] || DEFAULTS[key] || '';
+    }
+
+    var toastEl = document.getElementById('toast');
+    var toastTimer;
+    function showToast(msg, isError) {
+      toastEl.textContent = msg;
+      toastEl.className = 'toast' + (isError ? ' error' : '') + ' show';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function(){ toastEl.className = 'toast'; }, 2500);
+    }
+
+    var tabs = document.querySelectorAll('.tab');
+    var panels = document.querySelectorAll('.panel');
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        tabs.forEach(function(t){ t.classList.remove('active'); });
+        panels.forEach(function(p){ p.classList.remove('active'); });
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    var photoGrid = document.getElementById('photoGrid');
+    var photoCount = document.getElementById('photoCount');
+
+    function renderPhotos() {
+      photoGrid.innerHTML = '';
+      photoCount.textContent = state.photos.length;
+      state.photos.forEach(function(photo, i) {
+        var card = document.createElement('div');
+        card.className = 'photo-card' + (photo.featured ? ' featured' : '');
+
+        var img = document.createElement('img');
+        img.src = './' + photo.name;
+        img.alt = photo.name;
+        img.loading = 'lazy';
+        img.onerror = function() { img.style.background = '#27272a'; img.alt = 'не найдено'; };
+
+        var actions = document.createElement('div');
+        actions.className = 'photo-card-actions';
+
+        var starBtn = document.createElement('button');
+        starBtn.className = 'star-btn' + (photo.featured ? ' active' : '');
+        starBtn.innerHTML = photo.featured ? '&#9733; В избранном' : '&#9734; В избранное';
+        starBtn.addEventListener('click', function() {
+          photo.featured = !photo.featured;
+          renderPhotos();
+          showToast(photo.featured ? 'Добавлено в избранное' : 'Убрано из избранного');
+        });
+
+        var delBtn = document.createElement('button');
+        delBtn.className = 'delete-btn';
+        delBtn.innerHTML = '&#10005; Удалить';
+        delBtn.addEventListener('click', function() {
+          if (confirm('Удалить ' + photo.name + '?')) {
+            state.photos.splice(i, 1);
+            renderPhotos();
+            showToast('Фото удалено');
+          }
+        });
+
+        actions.appendChild(starBtn);
+        actions.appendChild(delBtn);
+        card.appendChild(img);
+        card.appendChild(actions);
+        photoGrid.appendChild(card);
+      });
+    }
+
+    var uploadZone = document.getElementById('uploadZone');
+    var fileInput = document.getElementById('fileInput');
+
+    uploadZone.addEventListener('click', function() { fileInput.click(); });
+    uploadZone.addEventListener('dragover', function(e) { e.preventDefault(); uploadZone.classList.add('dragover'); });
+    uploadZone.addEventListener('dragleave', function() { uploadZone.classList.remove('dragover'); });
+    uploadZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener('change', function() { handleFiles(fileInput.files); });
+
+    function handleFiles(files) {
+      Array.from(files).forEach(function(file) {
+        if (!file.type.startsWith('image/')) return;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var name = 'custom_' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          var img = new Image();
+          img.onload = function() {
+            var canvas = document.createElement('canvas');
+            var maxW = 1600;
+            var w = img.width, h = img.height;
+            if (w > maxW) { h = h * maxW / w; w = maxW; }
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            state.photos.push({ name: name, dataUrl: dataUrl, featured: false, custom: true });
+            renderPhotos();
+            showToast('Фото добавлено: ' + file.name);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    var editableEls = document.querySelectorAll('.editable[data-key]');
+    var linkInputs = document.querySelectorAll('.link-input[data-key]');
+    var allTextEls = document.querySelectorAll('[data-key]');
+
+    function loadTexts() {
+      editableEls.forEach(function(el) {
+        el.textContent = getText(el.dataset.key);
+      });
+      linkInputs.forEach(function(input) {
+        input.value = getText(input.dataset.key);
+      });
+    }
+
+    function saveTexts() {
+      editableEls.forEach(function(el) {
+        state.texts[el.dataset.key] = el.textContent;
+      });
+      linkInputs.forEach(function(input) {
+        state.texts[input.dataset.key] = input.value;
+      });
+    }
+
+    editableEls.forEach(function(el) {
+      el.addEventListener('blur', function() {
+        state.texts[el.dataset.key] = el.textContent;
+      });
+    });
+
+    linkInputs.forEach(function(input) {
+      input.addEventListener('input', function() {
+        state.texts[input.dataset.key] = input.value;
+      });
+    });
+
+    document.getElementById('saveAllBtn').addEventListener('click', function() {
+      saveTexts();
+      var exportData = {
+        photos: state.photos.map(function(p) {
+          return { name: p.name, featured: p.featured, custom: p.custom || false, dataUrl: p.dataUrl || null };
+        }),
+        texts: state.texts
+      };
+      fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(exportData)
+      })
+      .then(function(r) { return r.json(); })
+      .then(function() {
+        saveState(state);
+        showToast('Сохранено на сервере!');
+      })
+      .catch(function() {
+        saveState(state);
+        showToast('Сервер недоступен, сохранено локально', true);
+      });
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', function() {
+      saveTexts();
+      var exportData = {
+        photos: state.photos.map(function(p) {
+          return { name: p.name, featured: p.featured, custom: p.custom || false, dataUrl: p.dataUrl || null };
+        }),
+        texts: state.texts
+      };
+      var blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'config.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('config.json скачан!');
+    });
+
+    var LOGIN = 'Mafennec';
+    var auth = JSON.parse(localStorage.getItem('adminAuth') || 'null');
+    if (!auth || auth.pw !== localStorage.getItem('adminPwHash')) {
+      showLogin();
+    } else {
+      document.getElementById('loginOverlay').classList.add('hidden');
+    }
+
+    function simpleHash(s) {
+      var h = 0;
+      for (var i = 0; i < s.length; i++) { h = ((h << 5) - h + s.charCodeAt(i)) | 0; }
+      return h.toString(36);
+    }
+
+    if (!localStorage.getItem('adminPwHash')) {
+      localStorage.setItem('adminPwHash', simpleHash('123123'));
+    }
+
+    function showLogin() {
+      document.getElementById('loginOverlay').classList.remove('hidden');
+    }
+
+    document.getElementById('loginBtn').onclick = function() {
+      var u = document.getElementById('loginUser').value.trim();
+      var p = document.getElementById('loginPass').value;
+      var err = document.getElementById('loginError');
+      if (u !== LOGIN || simpleHash(p) !== localStorage.getItem('adminPwHash')) {
+        err.textContent = 'Неверный логин или пароль';
+        return;
+      }
+      localStorage.setItem('adminAuth', JSON.stringify({ user: u, ts: Date.now() }));
+      document.getElementById('loginOverlay').classList.add('hidden');
+      err.textContent = '';
+    };
+
+    document.getElementById('loginPass').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') document.getElementById('loginBtn').click();
+    });
+    document.getElementById('loginUser').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') document.getElementById('loginPass').focus();
+    });
+
+    document.getElementById('pwChangeBtn').onclick = function() {
+      document.getElementById('pwModal').classList.remove('hidden');
+      document.getElementById('pwOld').value = '';
+      document.getElementById('pwNew').value = '';
+      document.getElementById('pwNew2').value = '';
+      document.getElementById('pwError').textContent = '';
+    };
+    document.getElementById('pwCancel').onclick = function() {
+      document.getElementById('pwModal').classList.add('hidden');
+    };
+    document.getElementById('pwSave').onclick = function() {
+      var old = document.getElementById('pwOld').value;
+      var nw = document.getElementById('pwNew').value;
+      var nw2 = document.getElementById('pwNew2').value;
+      var err = document.getElementById('pwError');
+      if (simpleHash(old) !== localStorage.getItem('adminPwHash')) { err.textContent = 'Неверный текущий пароль'; return; }
+      if (nw.length < 4) { err.textContent = 'Минимум 4 символа'; return; }
+      if (nw !== nw2) { err.textContent = 'Пароли не совпадают'; return; }
+      localStorage.setItem('adminPwHash', simpleHash(nw));
+      document.getElementById('pwModal').classList.add('hidden');
+      err.textContent = '';
+      showToast('Пароль изменён');
+    };
+
+    fetch('/api/config')
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .catch(function() { return null; })
+      .then(function(config) {
+        if (config) {
+          if (config.photos) state.photos = config.photos;
+          if (config.texts) state.texts = config.texts;
+        }
+        renderPhotos();
+        loadTexts();
+      });
+  </script>
+</body>
+</html>

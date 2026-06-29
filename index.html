@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Портфолио графического художника — Mafennec">
+  <title>Mafennec | Портфолио графического художника</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #0a0a0b;
+      --color-bg-elevated: #131316;
+      --color-bg-card: #18181b;
+      --color-fg: #fafafa;
+      --color-fg-muted: #a1a1aa;
+      --color-fg-subtle: #71717a;
+      --color-accent: #ffffff;
+      --color-accent-hover: #e4e4e7;
+      --color-border: #27272a;
+      --color-border-hover: #3f3f46;
+      --color-focus: #ffffff;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --space-xs: 0.5rem;
+      --space-sm: 0.75rem;
+      --space-md: 1.25rem;
+      --space-lg: 2rem;
+      --space-xl: 3rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --transition-fast: 150ms ease;
+      --transition-base: 300ms ease;
+      --transition-slow: 500ms ease;
+      --container-max: 1280px;
+      --container-padding: 1.5rem;
+      --header-height: 72px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      :root { --transition-fast: 0ms; --transition-base: 0ms; --transition-slow: 0ms; }
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-bg);
+      color: var(--color-fg);
+      line-height: 1.6;
+      font-size: 1rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; font-size: inherit; background: none; border: none; cursor: pointer; }
+    ul { list-style: none; }
+    .container { width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 var(--container-padding); }
+    .section-header { text-align: center; margin-bottom: var(--space-2xl); }
+    .section-title { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
+    .section-subtitle { font-size: clamp(1rem, 2vw, 1.125rem); color: var(--color-fg-muted); margin-top: var(--space-sm); font-weight: 400; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); padding: 0.875rem 1.75rem; font-weight: 500; font-size: 0.9375rem; border-radius: var(--radius-md); transition: all var(--transition-base); white-space: nowrap; }
+    .btn-primary { background: var(--color-accent); color: var(--color-bg); }
+    .btn-primary:hover { background: var(--color-accent-hover); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15); }
+    .btn-primary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+    .header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(10, 10, 11, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--color-border); z-index: 100; transition: background var(--transition-base), border-color var(--transition-base); }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 100%; }
+    .logo { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.01em; transition: opacity var(--transition-fast); }
+    .logo:hover { opacity: 0.7; }
+    .nav-links { display: flex; align-items: center; gap: var(--space-xl); }
+    .nav-link { font-size: 0.9375rem; font-weight: 500; color: var(--color-fg-muted); transition: color var(--transition-fast); position: relative; }
+    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--color-accent); transition: width var(--transition-base); }
+    .nav-link:hover { color: var(--color-fg); }
+    .nav-link:hover::after { width: 100%; }
+    .nav-toggle { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: var(--radius-md); background: var(--color-bg-card); border: 1px solid var(--color-border); }
+    .hamburger { position: relative; width: 22px; height: 2px; background: var(--color-fg); border-radius: 2px; transition: background var(--transition-fast); }
+    .hamburger::before, .hamburger::after { content: ''; position: absolute; left: 0; width: 100%; height: 2px; background: var(--color-fg); border-radius: 2px; transition: transform var(--transition-base); }
+    .hamburger::before { top: -7px; }
+    .hamburger::after { bottom: -7px; }
+    .nav-toggle[aria-expanded="true"] .hamburger { background: transparent; }
+    .nav-toggle[aria-expanded="true"] .hamburger::before { transform: rotate(45deg) translate(5px, 5px); }
+    .nav-toggle[aria-expanded="true"] .hamburger::after { transform: rotate(-45deg) translate(5px, -5px); }
+    .hero { min-height: 100vh; display: flex; align-items: center; padding-top: var(--header-height); position: relative; overflow: hidden; }
+    .hero-photo { position: absolute; inset: 0; z-index: 0; }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .hero-gradient { position: absolute; inset: 0; background: linear-gradient(90deg, #0a0a0b 0%, #0a0a0b 25%, rgba(10,10,11,0.85) 45%, rgba(10,10,11,0.4) 65%, transparent 80%); }
+    .hero-content { position: relative; z-index: 1; text-align: center; max-width: 620px; padding: var(--space-3xl); animation: fadeInUp 0.8s var(--transition-slow) both; display: flex; flex-direction: column; align-items: center; gap: var(--space-md); }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .hero-greeting { font-size: clamp(1rem, 2vw, 1.125rem); color: var(--color-fg-muted); font-weight: 400; }
+    .hero-title { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; background: linear-gradient(135deg, var(--color-fg) 0%, var(--color-fg-muted) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-subtitle { font-size: clamp(1.125rem, 2.5vw, 1.375rem); color: var(--color-fg-muted); font-weight: 400; line-height: 1.6; }
+    .featured { padding: var(--space-3xl) 0; }
+    .featured-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: var(--space-lg); }
+    .featured-item { position: relative; border-radius: var(--radius-xl); overflow: hidden; aspect-ratio: 4/5; background: var(--color-bg-card); border: 1px solid var(--color-border); transition: transform var(--transition-slow), border-color var(--transition-base), box-shadow var(--transition-slow); }
+    .featured-item:hover { transform: translateY(-8px); border-color: var(--color-border-hover); box-shadow: 0 24px 48px rgba(0,0,0,0.4); }
+    .featured-item img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-slow); }
+    .featured-item:hover img { transform: scale(1.05); }
+    .gallery { padding: var(--space-3xl) 0; }
+    .masonry-grid { columns: 1; column-gap: var(--space-md); }
+    @media (min-width: 640px) { .masonry-grid { columns: 2; } }
+    @media (min-width: 1024px) { .masonry-grid { columns: 3; } }
+    @media (min-width: 1440px) { .masonry-grid { columns: 4; } }
+    .masonry-item { break-inside: avoid; margin-bottom: var(--space-md); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-bg-card); border: 1px solid var(--color-border); }
+    .masonry-item img { width: 100%; height: auto; display: block; transition: transform var(--transition-slow), filter var(--transition-base); }
+    .masonry-item:hover img { transform: scale(1.03); filter: brightness(0.9); }
+    .about { padding: var(--space-3xl) 0; }
+    .about-content { max-width: 720px; margin: 0 auto; }
+    .about-text { margin-top: var(--space-xl); }
+    .about-text p { font-size: 1.0625rem; line-height: 1.8; color: var(--color-fg-muted); margin-bottom: var(--space-lg); }
+    .about-text p:last-child { margin-bottom: 0; }
+    .contact { padding: var(--space-3xl) 0; }
+    .contact-links { display: flex; flex-direction: column; align-items: center; gap: var(--space-md); max-width: 400px; margin: 0 auto; }
+    .contact-link { display: inline-flex; align-items: center; gap: var(--space-md); padding: var(--space-md) var(--space-lg); width: 100%; background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: 1rem; font-weight: 500; color: var(--color-fg); transition: all var(--transition-base); }
+    .contact-link:hover { background: var(--color-bg-elevated); border-color: var(--color-border-hover); transform: translateX(4px); }
+    .contact-link svg { width: 22px; height: 22px; flex-shrink: 0; color: var(--color-fg-muted); transition: color var(--transition-fast); }
+    .contact-link:hover svg { color: var(--color-fg); }
+    .lightbox { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); opacity: 0; visibility: hidden; transition: opacity var(--transition-base), visibility var(--transition-base); }
+    .lightbox:not([hidden]) { opacity: 1; visibility: visible; }
+    .lightbox-close { position: fixed; top: var(--space-lg); right: var(--space-lg); width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--color-bg-card); border: 1px solid var(--color-border); color: var(--color-fg); transition: all var(--transition-fast); z-index: 10; }
+    .lightbox-close:hover { background: var(--color-bg-elevated); border-color: var(--color-border-hover); transform: rotate(90deg); }
+    .lightbox-close svg { width: 24px; height: 24px; }
+    .lightbox-nav { position: fixed; top: 50%; transform: translateY(-50%); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--color-bg-card); border: 1px solid var(--color-border); color: var(--color-fg); transition: all var(--transition-fast); z-index: 10; }
+    .lightbox-nav:hover { background: var(--color-bg-elevated); border-color: var(--color-border-hover); }
+    .lightbox-nav svg { width: 24px; height: 24px; }
+    .lightbox-prev { left: var(--space-lg); }
+    .lightbox-next { right: var(--space-lg); }
+    .lightbox-content { max-width: 90vw; max-height: 85vh; text-align: center; }
+    .lightbox-content img { max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: var(--radius-md); box-shadow: 0 24px 48px rgba(0,0,0,0.5); }
+    .lightbox-caption { margin-top: var(--space-md); font-size: 1rem; color: var(--color-fg-muted); }
+    @media (max-width: 768px) {
+      .hero { min-height: 100vh; }
+      .hero-gradient { background: linear-gradient(180deg, #0a0a0b 0%, rgba(10,10,11,0.7) 40%, rgba(10,10,11,0.5) 60%, #0a0a0b 100%); }
+      .hero-content { text-align: center; padding: var(--space-2xl) var(--space-lg); max-width: 100%; align-self: flex-end; margin-bottom: 10vh; }
+      .nav-links { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-lg); background: var(--color-bg); border-top: 1px solid var(--color-border); padding: var(--space-2xl); transform: translateX(100%); transition: transform var(--transition-base); }
+      .nav-links.active { transform: translateX(0); }
+      .nav-toggle { display: flex; }
+      .featured-grid { grid-template-columns: 1fr; }
+      .lightbox-nav { width: 44px; height: 44px; }
+      .lightbox-prev { left: var(--space-md); }
+      .lightbox-next { right: var(--space-md); }
+      .lightbox-close { top: var(--space-md); right: var(--space-md); width: 40px; height: 40px; }
+    }
+    @media (max-width: 480px) {
+      :root { --container-padding: 1rem; }
+      .hero-title { font-size: clamp(2rem, 8vw, 3rem); }
+      .section-title { font-size: clamp(1.5rem, 5vw, 2rem); }
+      .masonry-grid { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <header class="header">
+      <nav class="nav container">
+        <a href="#" class="logo" aria-label="Главная">Mafennec</a>
+        <ul class="nav-links">
+          <li><a href="#featured" class="nav-link">Избранное</a></li>
+          <li><a href="#gallery" class="nav-link">Галерея</a></li>
+          <li><a href="#about" class="nav-link">Обо мне</a></li>
+          <li><a href="#contact" class="nav-link">Контакты</a></li>
+        </ul>
+        <button class="nav-toggle" aria-label="Меню" aria-expanded="false">
+          <span class="hamburger"></span>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="hero">
+        <div class="hero-photo">
+          <img src="./photo_2026-06-29_16-48-18.jpg" alt="" aria-hidden="true">
+          <div class="hero-gradient"></div>
+        </div>
+        <div class="hero-content">
+          <p class="hero-greeting" id="hero-greeting">Привет, я</p>
+          <h1 class="hero-title" id="hero-title">Mafennec</h1>
+          <p class="hero-subtitle" id="hero-subtitle">Графический художник. Создаю визуальные истории через фотографию и графику.</p>
+          <a href="#featured" class="btn btn-primary" id="hero-btn">Смотреть работы</a>
+        </div>
+      </section>
+
+      <section class="featured" id="featured" aria-labelledby="featured-heading">
+        <div class="container">
+          <header class="section-header">
+            <h2 id="featured-heading" class="section-title">Избранные работы</h2>
+            <p class="section-subtitle" id="featured-subtitle">Лучшие проекты, показывающие стиль и подход</p>
+          </header>
+          <div class="featured-grid" id="featured-grid" role="list"></div>
+        </div>
+      </section>
+
+      <section class="gallery" id="gallery" aria-labelledby="gallery-heading">
+        <div class="container">
+          <header class="section-header">
+            <h2 id="gallery-heading" class="section-title">Полная галерея</h2>
+            <p class="section-subtitle" id="gallery-subtitle">Все работы в хронологическом порядке</p>
+          </header>
+          <div class="masonry-grid" id="masonry-grid" role="list"></div>
+        </div>
+      </section>
+
+      <section class="about" id="about" aria-labelledby="about-heading">
+        <div class="container">
+          <div class="about-content">
+            <header class="section-header">
+              <h2 id="about-heading" class="section-title">Обо мне</h2>
+            </header>
+            <div class="about-text" id="about-body"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact" id="contact" aria-labelledby="contact-heading">
+        <div class="container">
+          <header class="section-header">
+            <h2 id="contact-heading" class="section-title">Связаться</h2>
+            <p class="section-subtitle" id="contact-subtitle">Открыт для новых проектов и сотрудничества</p>
+          </header>
+          <div class="contact-links">
+            <a href="https://t.me/mafennec" target="_blank" rel="noopener" class="contact-link">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.94 7.13l-1.97 9.28c-.15.67-.54.83-1.09.52l-3.02-2.22-1.46 1.4c-.16.16-.3.3-.62.3l.22-3.05 5.55-5.01c.24-.22-.05-.33-.37-.14L8.62 13.2l-2.97-.93c-.65-.2-.66-.65.14-.96l11.61-4.48c.54-.2 1.01.13.84.96l-.26.02z"/></svg>
+              <span>@mafennec</span>
+            </a>
+            <a href="https://www.tiktok.com/@mafennec?_r=1&_t=ZS-973l50kphtC" target="_blank" rel="noopener" class="contact-link">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1 0-5.78 2.92 2.92 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.57 6.33 6.33 0 0 0 9.37 22a6.33 6.33 0 0 0 6.37-6.22V9.4a8.16 8.16 0 0 0 4.85 1.58V7.53a4.85 4.85 0 0 1-1-.84z"/></svg>
+              <span>@mafennec</span>
+            </a>
+            <a href="https://youtube.com/@mafennec?si=tMbx_iJWUw3Xxd1D" target="_blank" rel="noopener" class="contact-link">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              <span>@mafennec</span>
+            </a>
+            <a href="https://www.twitch.tv/mafennec" target="_blank" rel="noopener" class="contact-link">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
+              <span>@mafennec</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр изображения" hidden>
+    <button class="lightbox-close" aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <button class="lightbox-nav lightbox-prev" aria-label="Предыдущее">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="lightbox-content">
+      <img id="lightbox-img" src="" alt="">
+    </div>
+    <button class="lightbox-nav lightbox-next" aria-label="Следующее">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+  <script>
+    var DEFAULTS = {
+      heroGreeting: 'Привет, я',
+      heroTitle: 'Mafennec',
+      heroSubtitle: 'Графический художник. Создаю визуальные истории через фотографию и графику.',
+      heroBtn: 'Смотреть работы',
+      featuredTitle: 'Избранные работы',
+      featuredSubtitle: 'Лучшие проекты, показывающие стиль и подход',
+      galleryTitle: 'Полная галерея',
+      gallerySubtitle: 'Все работы в хронологическом порядке',
+      aboutTitle: 'Обо мне',
+      aboutBody: 'Я Mafennec — графический художник с фокусом на визуальное повествование. Моя работа объединяет фотографию, графический дизайн и внимательность к деталям.\n\nКаждый проект начинается с понимания сути: чего хочет сказать бренд, какую эмоцию нужно передать, какую историю рассказать. Только потом рождается визуальный язык.\n\nВ портфолио представлены работы разных лет — от коммерческих съемок до личных проектов. Все они объединены стремлением к честной, глубокой и эстетичной визуальной коммуникации.',
+      contactTitle: 'Связаться',
+      contactSubtitle: 'Открыт для новых проектов и сотрудничества',
+      linkTelegram: 'https://t.me/mafennec',
+      linkTiktok: 'https://www.tiktok.com/@mafennec?_r=1&_t=ZS-973l50kphtC',
+      linkYoutube: 'https://youtube.com/@mafennec?si=tMbx_iJWUw3Xxd1D',
+      linkTwitch: 'https://www.twitch.tv/mafennec'
+    };
+    var DEFAULT_PHOTOS = [
+      'photo_2026-06-29_16-46-22.jpg','photo_2026-06-29_16-46-47.jpg',
+      'photo_2026-06-29_16-46-54.jpg','photo_2026-06-29_16-47-11.jpg',
+      'photo_2026-06-29_16-47-34.jpg','photo_2026-06-29_16-47-37.jpg',
+      'photo_2026-06-29_16-47-40.jpg','photo_2026-06-29_16-47-43.jpg',
+      'photo_2026-06-29_16-47-52.jpg','photo_2026-06-29_16-47-55.jpg',
+      'photo_2026-06-29_16-47-58.jpg','photo_2026-06-29_16-48-01.jpg',
+      'photo_2026-06-29_16-48-12.jpg','photo_2026-06-29_16-48-18.jpg',
+      'photo_2026-06-29_16-48-25.jpg','photo_2026-06-29_16-48-44.jpg',
+      'photo_2026-06-29_16-48-47.jpg','photo_2026-06-29_16-48-51.jpg'
+    ];
+
+    function t(key, texts) { return (texts && texts[key]) || DEFAULTS[key] || ''; }
+
+    function getImgSrc(photo) {
+      if (photo.dataUrl) return photo.dataUrl;
+      return './' + photo.name;
+    }
+
+    function applyConfig(config) {
+      var photos = (config && config.photos) ? config.photos : DEFAULT_PHOTOS.map(function(n){ return { name: n, featured: false }; });
+      var texts = (config && config.texts) ? config.texts : {};
+
+      document.getElementById('hero-greeting').textContent = t('heroGreeting', texts);
+      document.getElementById('hero-title').textContent = t('heroTitle', texts);
+      document.getElementById('hero-subtitle').textContent = t('heroSubtitle', texts);
+      document.getElementById('hero-btn').textContent = t('heroBtn', texts);
+      document.getElementById('featured-heading').textContent = t('featuredTitle', texts);
+      document.getElementById('featured-subtitle').textContent = t('featuredSubtitle', texts);
+      document.getElementById('gallery-heading').textContent = t('galleryTitle', texts);
+      document.getElementById('gallery-subtitle').textContent = t('gallerySubtitle', texts);
+      document.getElementById('about-heading').textContent = t('aboutTitle', texts);
+      document.getElementById('contact-heading').textContent = t('contactTitle', texts);
+      document.getElementById('contact-subtitle').textContent = t('contactSubtitle', texts);
+
+      var aboutBody = document.getElementById('about-body');
+      aboutBody.innerHTML = '';
+      t('aboutBody', texts).split('\n\n').forEach(function(p) {
+        if (p.trim()) {
+          var el = document.createElement('p');
+          el.textContent = p.trim();
+          aboutBody.appendChild(el);
+        }
+      });
+
+      var links = document.querySelectorAll('.contact-link');
+      var linkKeys = ['linkTelegram', 'linkTiktok', 'linkYoutube', 'linkTwitch'];
+      links.forEach(function(link, i) {
+        if (linkKeys[i] && t(linkKeys[i], texts)) {
+          link.href = t(linkKeys[i], texts);
+        }
+      });
+
+      var featuredImages = photos.filter(function(p) { return p.featured; });
+      if (featuredImages.length === 0) {
+        var step = Math.floor(photos.length / 4);
+        featuredImages = [];
+        for (var i = 0; i < 4 && i * step < photos.length; i++) {
+          featuredImages.push(photos[i * step]);
+        }
+      }
+
+      var featuredGrid = document.getElementById('featured-grid');
+      var masonryGrid = document.getElementById('masonry-grid');
+
+      featuredImages.forEach(function(photo, i) {
+        var item = document.createElement('div');
+        item.className = 'featured-item';
+        item.setAttribute('role', 'listitem');
+        var img = document.createElement('img');
+        img.src = getImgSrc(photo);
+        img.alt = '';
+        img.loading = i === 0 ? 'eager' : 'lazy';
+        img.decoding = 'async';
+        item.appendChild(img);
+        featuredGrid.appendChild(item);
+      });
+
+      photos.forEach(function(photo, i) {
+        var item = document.createElement('div');
+        item.className = 'masonry-item';
+        item.setAttribute('role', 'listitem');
+        item.dataset.index = i;
+        var img = document.createElement('img');
+        img.src = getImgSrc(photo);
+        img.alt = '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        item.appendChild(img);
+        masonryGrid.appendChild(item);
+      });
+
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImg = document.getElementById('lightbox-img');
+      var lightboxClose = lightbox.querySelector('.lightbox-close');
+      var lightboxPrev = lightbox.querySelector('.lightbox-prev');
+      var lightboxNext = lightbox.querySelector('.lightbox-next');
+      var currentIndex = 0;
+      var openGallery = 'featured';
+
+      function openLightbox(index, gallery) {
+        currentIndex = index;
+        openGallery = gallery;
+        var source = gallery === 'featured' ? featuredImages : photos;
+        lightboxImg.src = getImgSrc(source[index]);
+        lightbox.hidden = false;
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        lightbox.hidden = true;
+        document.body.style.overflow = '';
+      }
+
+      function navigateLightbox(direction) {
+        var source = openGallery === 'featured' ? featuredImages : photos;
+        currentIndex = (currentIndex + direction + source.length) % source.length;
+        lightboxImg.src = getImgSrc(source[currentIndex]);
+      }
+
+      featuredGrid.addEventListener('click', function(e) {
+        var item = e.target.closest('.featured-item');
+        if (!item) return;
+        var index = Array.from(featuredGrid.children).indexOf(item);
+        openLightbox(index, 'featured');
+      });
+
+      masonryGrid.addEventListener('click', function(e) {
+        var item = e.target.closest('.masonry-item');
+        if (!item) return;
+        openLightbox(parseInt(item.dataset.index, 10), 'gallery');
+      });
+
+      lightboxClose.addEventListener('click', closeLightbox);
+      lightboxPrev.addEventListener('click', function() { navigateLightbox(-1); });
+      lightboxNext.addEventListener('click', function() { navigateLightbox(1); });
+      lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
+
+      document.addEventListener('keydown', function(e) {
+        if (lightbox.hidden) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') navigateLightbox(-1);
+        if (e.key === 'ArrowRight') navigateLightbox(1);
+      });
+
+      var navToggle = document.querySelector('.nav-toggle');
+      var navLinks = document.querySelector('.nav-links');
+
+      navToggle.addEventListener('click', function() {
+        var expanded = navToggle.getAttribute('aria-expanded') === 'true';
+        navToggle.setAttribute('aria-expanded', String(!expanded));
+        navLinks.classList.toggle('active');
+      });
+
+      navLinks.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function() {
+          navToggle.setAttribute('aria-expanded', 'false');
+          navLinks.classList.remove('active');
+        });
+      });
+    }
+
+    fetch('/api/config')
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .catch(function() { return null; })
+      .then(function(config) { applyConfig(config); });
+  </script>
+</body>
+</html>
