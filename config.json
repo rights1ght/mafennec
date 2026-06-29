@@ -1,0 +1,147 @@
+﻿{
+    "texts":  {
+                  "linkYoutube":  "https://youtube.com/@mafennec?si=tMbx_iJWUw3Xxd1D",
+                  "gallerySubtitle":  "Все работы в хронологическом порядке",
+                  "contactTitle":  "Связаться",
+                  "featuredTitle":  "Избранные работы",
+                  "heroSubtitle":  "Графический художник. Создаю визуальные истории через фотографию и графику.",
+                  "heroTitle":  "Mafennec",
+                  "contactSubtitle":  "Открыт для новых проектов и сотрудничества",
+                  "featuredSubtitle":  "Лучшие проекты, показывающие стиль и подход",
+                  "heroBtn":  "Смотреть работы",
+                  "linkTwitch":  "https://www.twitch.tv/mafennec",
+                  "linkTiktok":  "https://www.tiktok.com/@mafennec?_r=1\u0026_t=ZS-973l50kphtC",
+                  "heroGreeting":  "Привет, я",
+                  "aboutBody":  "Я Mafennec — графический художник с фокусом на визуальное повествование. Моя работа объединяет фотографию, графический дизайн и внимательность к деталям.\\n\\nКаждый проект начинается с понимания сути: чего хочет сказать бренд, какую эмоцию нужно передать, какую историю рассказать. Только потом рождается визуальный язык.\\n\\nВ портфолио представлены работы разных лет — от коммерческих съемок до личных проектов. Все они объединены стремлением к честной, глубокой и эстетичной визуальной коммуникации.",
+                  "galleryTitle":  "Полная галерея",
+                  "aboutTitle":  "Обо мне",
+                  "linkTelegram":  "https://t.me/mafennec"
+              },
+    "photos":  [
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-46-22.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-46-47.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-46-54.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-47-01.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-47-11.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-47-34.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-47-37.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-47-40.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-47-43.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-47-52.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-47-55.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-47-58.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-01.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-03.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-12.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-15.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-18.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-20.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-25.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-28.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-31.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-33.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-44.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-47.jpg",
+                       "featured":  false
+                   },
+                   {
+                       "custom":  false,
+                       "name":  "photo_2026-06-29_16-48-51.jpg",
+                       "featured":  false
+                   }
+               ]
+}
